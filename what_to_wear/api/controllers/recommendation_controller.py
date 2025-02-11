@@ -1,19 +1,13 @@
-import os
 from http import HTTPStatus
 
-from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 
 from what_to_wear.api.services.weather_service import get_current_weather_data
 from what_to_wear.api.services.recommendation_service import get_llm_recommendation
 
-load_dotenv()
 
 router = APIRouter()
-
-weather_api_base_url = os.getenv("WEATHER_API_BASE_URL")
-weather_api_key = os.getenv("WEATHER_API_KEY")
 
 
 @router.get("/latlon/{lat}/{lon}")
