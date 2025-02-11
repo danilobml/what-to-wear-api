@@ -5,7 +5,7 @@ from http import HTTPStatus
 from dotenv import load_dotenv
 from fastapi import HTTPException
 
-from what_to_wear.api.models.current_weather import CurrentWeather
+from what_to_wear.api.models.current_weather import WeatherResponse
 
 load_dotenv()
 
@@ -13,12 +13,10 @@ weather_api_base_url = os.getenv("WEATHER_API_BASE_URL")
 weather_api_key = os.getenv("WEATHER_API_KEY")
 
 
-async def get_current_weather_data(lat: str, lon: str) -> CurrentWeather:
+async def get_current_weather_data(lat: str, lon: str) -> WeatherResponse:
     try:
 
         q_param = f"{lat},{lon}"
-
-        print(weather_api_base_url)
 
         async with httpx.AsyncClient() as client:
             response = await client.get(
@@ -27,8 +25,9 @@ async def get_current_weather_data(lat: str, lon: str) -> CurrentWeather:
                 timeout=10.0
                 )
             response.raise_for_status()
+            weather_dict = response.json()
 
-            return response.json()
+            return WeatherResponse(**weather_dict)
 
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail="Weather API error")
