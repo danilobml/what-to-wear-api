@@ -1,16 +1,10 @@
-import os
 import httpx
 from http import HTTPStatus
 
-from dotenv import load_dotenv
 from fastapi import HTTPException
 
 from what_to_wear.api.models.current_weather import WeatherResponse
-
-load_dotenv()
-
-weather_api_base_url = os.getenv("WEATHER_API_BASE_URL")
-weather_api_key = os.getenv("WEATHER_API_KEY")
+from what_to_wear.utils.constants import WEATHER_API_BASE_URL, WEATHER_API_KEY
 
 
 async def get_current_weather_data(lat: str, lon: str) -> WeatherResponse:
@@ -20,8 +14,8 @@ async def get_current_weather_data(lat: str, lon: str) -> WeatherResponse:
 
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"{weather_api_base_url}/current.json",
-                params={"key": weather_api_key, "q": q_param},
+                f"{WEATHER_API_BASE_URL}/current.json",
+                params={"key": WEATHER_API_KEY, "q": q_param},
                 timeout=10.0
                 )
             response.raise_for_status()
