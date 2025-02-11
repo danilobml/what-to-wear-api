@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from ..api.controllers import test
+from ..api.controllers import weather_controller
 
 router = APIRouter()
 
-router.include_router(test.router, prefix='/test', tags=['test'])
+router.include_router(weather_controller.router, prefix='/weather', tags=['test'])
