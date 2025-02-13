@@ -50,6 +50,6 @@ class CurrentWeather(BaseModel):
     gust_kph: float
 
 
-class WeatherResponse(BaseModel):
+class CurrentWeatherResponse(BaseModel):
     location: Location
     current: CurrentWeather
