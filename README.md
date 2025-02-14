@@ -1,5 +1,11 @@
 # WhatToWear
-## A FastAPI based, wardrobe recommendation API, using an AI model and real-time weather data + forecast.
+## A FastAPI-based, wardrobe recommendation API, accessing a Large Language Model, and real-time weather data + forecast.
+
+## Tooling:
+-FastAPI;
+-Docker
+-JWT Auth
+-Postgres DB for auth
 
 ## To run locally:
 
@@ -7,8 +13,9 @@
 
 2.Run the command docker-compose up -d in your terminal
 
-## Url
+Then:
+### Url
 http://localhost:8000
 
-## Swagger
+### API endpoints (Swagger)
 http://localhost:8000/docs
