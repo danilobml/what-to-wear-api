@@ -2,9 +2,13 @@
 ## A FastAPI-based, wardrobe recommendation API, accessing a Large Language Model, and real-time weather data + forecast.
 
 ## Tooling:
+
 -FastAPI;
+
 -Docker
+
 -JWT Auth
+
 -Postgres DB for auth
 
 ## To run locally:
