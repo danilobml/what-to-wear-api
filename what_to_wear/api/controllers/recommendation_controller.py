@@ -6,12 +6,16 @@ from what_to_wear.api.services.weather_service import get_current_weather_data, 
 from what_to_wear.api.services.recommendation_service import get_llm_recommendation
 from what_to_wear.api.utils.constants import RequestTypeEnum
 from what_to_wear.api.models.schemas.weather_request_params import WeatherRequestParams, ForecastWeatherRequestParams
+from what_to_wear.api.services.auth_service import get_current_user
 
 router = APIRouter()
 
 
 @router.get("/current")
-async def get_current_recommendation(params: WeatherRequestParams = Depends()) -> JSONResponse:
+async def get_current_recommendation(
+            params: WeatherRequestParams = Depends(),
+            current_user: dict = Depends(get_current_user)
+        ) -> JSONResponse:
     """ Fetches LLM-based clothing recommendations based on current weather. """
     try:
         weather_data = await get_current_weather_data(params.lat, params.lon)
@@ -23,7 +27,10 @@ async def get_current_recommendation(params: WeatherRequestParams = Depends()) -
 
 
 @router.get("/forecast")
-async def get_forecast_recommendation(params: ForecastWeatherRequestParams = Depends()) -> JSONResponse:
+async def get_forecast_recommendation(
+            params: ForecastWeatherRequestParams = Depends(),
+            current_user: dict = Depends(get_current_user)
+        ) -> JSONResponse:
     """ Fetches LLM-based clothing recommendations based on forecast weather. """
     try:
         weather_data = await get_forecast_weather_data(params.lat, params.lon, params.days)

@@ -15,6 +15,8 @@ HEADERS = {"Authorization": f"Bearer {LLM_API_KEY}"}
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+SECRET_KEY = os.getenv("SECRET_KEY")
+
 
 # Enums and other constants:
 class RequestTypeEnum(str, Enum):
@@ -25,6 +27,10 @@ class RequestTypeEnum(str, Enum):
 class ModelTypeEnum(str, Enum):
     MISTRAL = "MISTRAL"
 
+
+# Auth:
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 # Change model here:
 MODEL_TYPE = ModelTypeEnum.MISTRAL
@@ -43,3 +49,15 @@ class NoModelSelectedException(Exception):
 
 class MissingDataException(Exception):
     """ Exception caused when data that is essential for processing the request is missing """
+
+
+class FailureCreatingUserException(Exception):
+    """Exception raised when there is an error creating a new user."""
+    def __init__(self):
+        super().__init__("Failure creating user")
+
+
+class UsernameAlreadyExistsException(Exception):
+    """Exception raised when creating a new user with an already existing username """
+    def __init__(self):
+        super().__init__("Username already exists")
