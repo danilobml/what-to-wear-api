@@ -1,7 +1,5 @@
 from what_to_wear.api.models.schemas.current_weather import CurrentWeatherResponse
 from what_to_wear.api.models.schemas.forecast_weather import ForecastWeatherResponse, DayForecast
-from what_to_wear.api.models.schemas.mistral_llm_response import MistralLlmResponse
-from what_to_wear.api.utils.constants import ModelTypeEnum, NoModelSelectedException, MODEL_URLS
 
 
 def generate_clothes_recommendation_prompt_current_weather(weather_data: CurrentWeatherResponse) -> str:
@@ -45,16 +43,3 @@ def generate_clothes_recommendation_prompt_forecast(weather_data: ForecastWeathe
         day_prompt = generate_individual_forecast_prompt(day.day)
         final_prompt += f" .Day: {day.date}: {day_prompt}"
     return final_prompt
-
-
-def get_content_from_llm_response(llm_response, model_type: ModelTypeEnum) -> str:
-    """ Gets the relevant (content) part of LLM responses. Configure for new models: """
-    if model_type == ModelTypeEnum.MISTRAL:
-        llm_response: MistralLlmResponse
-        return llm_response["choices"][0]["message"]["content"]
-    else:
-        raise NoModelSelectedException()
-
-
-def get_model_url(model_type: ModelTypeEnum):
-    return MODEL_URLS.get(model_type)

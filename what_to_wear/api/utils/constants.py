@@ -35,9 +35,16 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 # Change model here:
 MODEL_TYPE = ModelTypeEnum.MISTRAL
 
-MODEL_URLS = {
+MODEL_PARAMS = {
     ModelTypeEnum.MISTRAL: "mistralai/mistral-7b-instruct"
 }
+
+
+# CORS:
+ORIGINS = [
+    "http://localhost",
+    "http://localhost:8080",
+]
 
 
 # Custom exceptions:
