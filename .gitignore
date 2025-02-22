@@ -178,3 +178,6 @@ pyrightconfig.json
 
 # test
 .coverage
+
+# VsCode
+.vscode
