@@ -1,0 +1,57 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: sqlite:///test.db
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install Dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Run Tests
+        run: poetry run pytest --maxfail=1 --disable-warnings --cov=.
+
+  # lint:
+  #   name: Run Linter
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: "3.12"
+
+  #     - name: Install Poetry
+  #       run: pip install poetry
+
+  #     - name: Install Dependencies
+  #       run: poetry install --no-interaction --no-root
+
+  #     - name: Install Flake8
+  #       run: poetry add --dev flake8  # ✅ Ensure Flake8 is installed in the virtual environment
+
+  #     - name: Run Linter
+  #       run: poetry run flake8 --max-line-length=88 --ignore=E203,E266,E501,W503,F403,F401 .
