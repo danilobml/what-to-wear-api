@@ -3,7 +3,9 @@
 
 ## Tooling:
 
--FastAPI;
+-FastAPI
+
+- Open Router LLM interface
 
 -Docker
 
@@ -11,15 +13,29 @@
 
 -Postgres DB for auth
 
-## To run locally:
+## Deployed (with CI/CD):
 
-1.Fork repository and clone locally.
+https://what-to-wear-api.onrender.com
 
-2.Run the command docker-compose up -d in your terminal
+## Swagger:
 
-Then:
-### Url
-http://localhost:8000
+https://what-to-wear-api.onrender.com/docs
 
-### API endpoints (Swagger)
-http://localhost:8000/docs
+
+## Usage:
+
+### Register:
+- Do a POST request to: https://what-to-wear-api.onrender.com/auth/register
+
+request body: {"username": string, "password": string}
+
+### Login:
+- Do a POST request to: https://what-to-wear-api.onrender.com/auth/login
+
+request body (same as above): {"username": string, "password": string}
+
+- Copy the token string.
+
+### Using all routes:
+
+- Add the Authorization header to your request and the value should be "Bearer + [copied token]"
