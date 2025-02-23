@@ -12,7 +12,12 @@ async def lifespan(app: FastAPI):
     init_db()
     yield
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    title="What To Wear API",
+    description="API to get weather forecast and wardrobe recommendations based on it from an LLM.",
+    version="0.0.1"
+)
 
 app.add_middleware(
     CORSMiddleware,

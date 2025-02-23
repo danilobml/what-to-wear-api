@@ -4,12 +4,14 @@ from fastapi.responses import JSONResponse
 
 from what_to_wear.api.services.weather_service import get_current_weather_data, get_forecast_weather_data
 from what_to_wear.api.models.schemas.weather_request_params import WeatherRequestParams, ForecastWeatherRequestParams
+from what_to_wear.api.models.schemas.current_weather import CurrentWeatherResponse
+from what_to_wear.api.models.schemas.forecast_weather import ForecastWeatherResponse
 from what_to_wear.api.services.auth_service import get_current_user
 
 router = APIRouter()
 
 
-@router.get("/current")
+@router.get("/current", response_model=CurrentWeatherResponse)
 async def get_current_weather(
             params: WeatherRequestParams = Depends(),
             current_user: dict = Depends(get_current_user)
@@ -23,7 +25,7 @@ async def get_current_weather(
         raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=f"Error fetching weather data: {e}")
 
 
-@router.get("/forecast")
+@router.get("/forecast", response_model=ForecastWeatherResponse)
 async def get_forecast_weather(
             params: ForecastWeatherRequestParams = Depends(),
             current_user: dict = Depends(get_current_user)
