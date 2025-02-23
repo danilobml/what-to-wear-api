@@ -42,8 +42,10 @@ MODEL_PARAMS = {
 
 # CORS:
 ORIGINS = [
-    "http://localhost",
-    "http://localhost:8080",
+    # NOTE - All origins allowed for testing. Replace * by actual application URL's for production
+    # "http://localhost",
+    # "http://localhost:8080",
+    "*"
 ]
 
 
