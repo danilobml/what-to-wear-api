@@ -35,7 +35,7 @@ async def register_user(user_data: UserAuth, session=Depends(get_session)):
         raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=f"Error creating user: {e}")
 
 
-@router.post("/login")
+@router.post("/login", response_model=Token)
 async def login_for_access_token(user_data: UserAuth, session=Depends(get_session)) -> Token:
     """ Logs in and returns JWT, if username and password match a DB User """
     user = authenticate_user(user_data.username, user_data.password, session)

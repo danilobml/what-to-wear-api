@@ -11,7 +11,7 @@ from what_to_wear.api.services.auth_service import get_current_user
 router = APIRouter()
 
 
-@router.get("/current")
+@router.get("/current", response_model=str)
 async def get_current_recommendation(
             params: WeatherRequestParams = Depends(),
             current_user: dict = Depends(get_current_user)
@@ -26,7 +26,7 @@ async def get_current_recommendation(
         raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=f"Error generating recommendation: {e}")
 
 
-@router.get("/forecast")
+@router.get("/forecast", response_model=str)
 async def get_forecast_recommendation(
             params: ForecastWeatherRequestParams = Depends(),
             current_user: dict = Depends(get_current_user)
