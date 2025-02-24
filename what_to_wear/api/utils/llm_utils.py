@@ -35,7 +35,8 @@ class LLMResponseParserFactory:
 def get_content_from_llm_response(llm_response, model_type: ModelTypeEnum) -> str:
     """ Gets the relevant (content) part of LLM responses: """
     parser = LLMResponseParserFactory.get_parser(model_type)
-    return parser.get_content(llm_response)
+    parser_instance = parser()
+    return parser_instance.get_content(llm_response)
 
 
 def get_model_params(model_type: ModelTypeEnum) -> str:
