@@ -1,11 +1,19 @@
 from typing import Optional
-
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class WeatherRequestParams(BaseModel):
-    lat: float = Field(..., description="Latitude in decimal degrees, required.")
-    lon: float = Field(..., description="Longitude in decimal degrees, required.")
+    lat: Optional[float] = Field(None, description="Latitude in decimal degrees.")
+    lon: Optional[float] = Field(None, description="Longitude in decimal degrees.")
+    city: Optional[str] = Field(None, description="City name.")
+
+    @model_validator(mode="before")
+    @classmethod
+    def check_required_params(cls, values):
+        if not values.get("lat") or not values.get("lon"):
+            if not values.get("city"):
+                raise ValueError("Either 'city' or ('lat', 'lon') must be provided.")
+        return values
 
 
 class ForecastWeatherRequestParams(WeatherRequestParams):
