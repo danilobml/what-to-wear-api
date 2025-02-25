@@ -15,6 +15,7 @@ jobs:
       WEATHER_API_KEY: "mock_api_key"
       DATABASE_URL: "sqlite:///test.db"
       LLM_API_URL: "https://mock_llm_api.com/v1"
+      SECRET_KEY: "mock_secret_key"
 
     steps:
       - name: Checkout Repository
