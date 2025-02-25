@@ -3,15 +3,17 @@
 
 ## Tooling:
 
--FastAPI
+- FastAPI
 
 - Open Router LLM interface
 
--Docker
+- Docker
 
--JWT Auth
+- JWT Auth
 
--Postgres DB for auth
+- SQLModel ORM
+
+- Postgres DB
 
 ## Deployed (with CI/CD):
 
