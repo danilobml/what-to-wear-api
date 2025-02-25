@@ -11,9 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      WEATHER_API_BASE_URL: "https://api.weatherapi.com/v1"
+      WEATHER_API_BASE_URL: "https://mock_weatherapi.com/v1"
       WEATHER_API_KEY: "mock_api_key"
       DATABASE_URL: "sqlite:///test.db"
+      LLM_API_URL: "https://mock_llm_api.com/v1"
 
     steps:
       - name: Checkout Repository
