@@ -19,6 +19,8 @@
 
 https://what-to-wear-api.onrender.com
 
+#### Note: given restrictions enacted by the cloud provider, Render (https://render.com/), for free-tier applications, the first loading time is considerably longer, please be patient. 
+
 ## Swagger:
 
 https://what-to-wear-api.onrender.com/docs
@@ -27,17 +29,17 @@ https://what-to-wear-api.onrender.com/docs
 ## Usage:
 
 ### Register:
-- Do a POST request to: https://what-to-wear-api.onrender.com/auth/register
+- Perform a POST request to: https://what-to-wear-api.onrender.com/auth/register
 
-request body: {"username": string, "password": string}
+- Add to the request body: {"username": string, "password": string}
 
 ### Login:
-- Do a POST request to: https://what-to-wear-api.onrender.com/auth/login
+- Perform a POST request to: https://what-to-wear-api.onrender.com/auth/login
 
-request body (same as above): {"username": string, "password": string}
+- Add to the request body (with the same values as above): {"username": [value], "password": [value]}
 
-- Copy the token string.
+- Once you get a response, copy the token string from the response body.
 
-### Using all routes:
+### Using all other routes:
 
-- Add the Authorization header to your request and the value should be "Bearer + [copied token]"
+- Add the "Authorization" header to your GET requests, with the value "Bearer + [copied token string]"
