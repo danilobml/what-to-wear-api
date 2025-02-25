@@ -13,27 +13,28 @@ router = APIRouter()
 
 @router.get("/current", response_model=CurrentWeatherResponse)
 async def get_current_weather(
-            params: WeatherRequestParams = Depends(),
-            current_user: dict = Depends(get_current_user)
-        ) -> JSONResponse:
-    """ Fetches weather data for current conditions. """
+    params: WeatherRequestParams = Depends(),
+    current_user: dict = Depends(get_current_user)
+) -> JSONResponse:
     try:
-        weather_data = await get_current_weather_data(params.lat, params.lon)
-        return JSONResponse(status_code=HTTPStatus.OK, content=weather_data)
-
+        weather_data = await get_current_weather_data(params.lat, params.lon, params.city)
+        return JSONResponse(status_code=HTTPStatus.OK, content=weather_data.model_dump())
+    except ValueError as e:
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=f"Error fetching weather data: {e}")
+        raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=f"Error fetching weather data: {e}")
 
 
 @router.get("/forecast", response_model=ForecastWeatherResponse)
 async def get_forecast_weather(
-            params: ForecastWeatherRequestParams = Depends(),
-            current_user: dict = Depends(get_current_user)
-        ) -> JSONResponse:
-    """ Fetches weather forecast data. """
+    params: ForecastWeatherRequestParams = Depends(),
+    current_user: dict = Depends(get_current_user)
+) -> JSONResponse:
     try:
-        weather_data = await get_forecast_weather_data(params.lat, params.lon, params.days)
-        return JSONResponse(status_code=HTTPStatus.OK, content=weather_data)
-
+        weather_data = await get_forecast_weather_data(params.lat, params.lon, params.city, params.days)
+        return JSONResponse(status_code=HTTPStatus.OK, content=weather_data.model_dump())
+    except ValueError as e:
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=f"Error fetching forecast weather data: {e}")
+        raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                            detail=f"Error fetching forecast weather data: {e}")

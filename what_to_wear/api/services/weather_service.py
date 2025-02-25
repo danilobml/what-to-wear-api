@@ -1,5 +1,5 @@
 import httpx
-
+from typing import Optional
 from http import HTTPStatus
 from fastapi import HTTPException
 
@@ -8,10 +8,18 @@ from what_to_wear.api.models.schemas.forecast_weather import ForecastWeatherResp
 from what_to_wear.api.utils.constants import WEATHER_API_BASE_URL, WEATHER_API_KEY
 
 
-async def get_current_weather_data(lat: str, lon: str) -> CurrentWeatherResponse:
-    try:
-        q_param = f"{lat},{lon}"
+async def get_current_weather_data(
+    lat: Optional[str],
+    lon: Optional[str],
+    city: Optional[str]
+) -> CurrentWeatherResponse:
+    if not (lat and lon) and not city:
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST,
+                            detail="Either 'city' or ('lat', 'lon') must be provided.")
 
+    q_param = city if city else f"{lat},{lon}"
+
+    try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 f"{WEATHER_API_BASE_URL}/current.json",
@@ -24,17 +32,32 @@ async def get_current_weather_data(lat: str, lon: str) -> CurrentWeatherResponse
             return CurrentWeatherResponse(**weather_dict)
 
     except httpx.HTTPStatusError as e:
+        if e.response.status_code == 404:
+            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="City or coordinates not found.")
+        if e.response.status_code == 400:
+            raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="Invalid city or coordinates.")
         raise HTTPException(status_code=e.response.status_code, detail="Weather API error")
+
     except httpx.RequestError:
-        raise HTTPException(status_code=503, detail="Service unavailable")
+        raise HTTPException(status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail="Service unavailable")
+
     except Exception as e:
         raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=str(e))
 
 
-async def get_forecast_weather_data(lat: str, lon: str, days: int) -> ForecastWeatherResponse:
-    try:
-        q_param = f"{lat},{lon}"
+async def get_forecast_weather_data(
+    lat: Optional[str],
+    lon: Optional[str],
+    city: Optional[str],
+    days: int
+) -> ForecastWeatherResponse:
+    if not (lat and lon) and not city:
+        raise HTTPException(status_code=HTTPStatus.BAD_REQUEST,
+                            detail="Either 'city' or ('lat', 'lon') must be provided.")
 
+    q_param = city if city else f"{lat},{lon}"
+
+    try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 f"{WEATHER_API_BASE_URL}/forecast.json",
@@ -47,8 +70,14 @@ async def get_forecast_weather_data(lat: str, lon: str, days: int) -> ForecastWe
             return ForecastWeatherResponse(**weather_dict)
 
     except httpx.HTTPStatusError as e:
+        if e.response.status_code == 404:
+            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="City or coordinates not found.")
+        if e.response.status_code == 400:
+            raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail="Invalid city or coordinates.")
         raise HTTPException(status_code=e.response.status_code, detail="Weather API error")
+
     except httpx.RequestError:
-        raise HTTPException(status_code=503, detail="Service unavailable")
+        raise HTTPException(status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail="Service unavailable")
+
     except Exception as e:
         raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=str(e))
