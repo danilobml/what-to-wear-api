@@ -1,5 +1,4 @@
 import httpx
-
 from typing import Union
 from fastapi import HTTPException
 
@@ -17,8 +16,6 @@ async def get_llm_recommendation(
     weather_data: Union[CurrentWeatherResponse, ForecastWeatherResponse],
     type: RequestTypeEnum
 ) -> str:
-    """Generates clothing recommendations based on weather data."""
-
     if type == RequestTypeEnum.CURRENT:
         weather_data: CurrentWeatherResponse
         prompt = generate_clothes_recommendation_prompt_current_weather(weather_data)
@@ -26,22 +23,24 @@ async def get_llm_recommendation(
         weather_data: ForecastWeatherResponse
         prompt = generate_clothes_recommendation_prompt_forecast(weather_data)
 
-    llm_response = await query_llm(prompt, MODEL_TYPE)
-    return llm_response
+    return await query_llm(prompt, MODEL_TYPE)
 
 
 async def query_llm(prompt: str, model_type: ModelTypeEnum) -> str:
-    """Sends a request to the LLM API and returns the response."""
     data = {
         "model": f"{get_model_params(model_type)}",
         "messages": [{"role": "user", "content": prompt}]
     }
 
     async with httpx.AsyncClient() as client:
-        response = await client.post(LLM_API_URL, headers=HEADERS, json=data)
-        if response.status_code == 200:
+        try:
+            response = await client.post(LLM_API_URL, headers=HEADERS, json=data)
+            response.raise_for_status()
             response_json = response.json()
-            content = get_content_from_llm_response(response_json, model_type)
-            return content
-        else:
-            raise HTTPException(status_code=response.status_code, detail=response.text)
+            return get_content_from_llm_response(response_json, model_type)
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(status_code=e.response.status_code, detail=e.response.text)
+        except httpx.RequestError:
+            raise HTTPException(status_code=503, detail="Service unavailable")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
