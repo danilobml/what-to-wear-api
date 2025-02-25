@@ -1,4 +1,5 @@
 from typing import Optional
+from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -10,9 +11,14 @@ class WeatherRequestParams(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def check_required_params(cls, values):
-        if not values.get("lat") or not values.get("lon"):
-            if not values.get("city"):
-                raise ValueError("Either 'city' or ('lat', 'lon') must be provided.")
+        lat, lon, city = values.get("lat"), values.get("lon"), values.get("city")
+
+        if (lat is None or lon is None) and not city:
+            raise RequestValidationError("Either 'city' or ('lat', 'lon') must be provided.")
+
+        if city and lat is not None and lon is not None:
+            raise RequestValidationError("Provide either 'city' or ('lat', 'lon'), but not all three.")
+
         return values
 
 
