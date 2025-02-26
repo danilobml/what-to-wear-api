@@ -6,9 +6,32 @@ on:
       - main
 
 jobs:
+  lint:
+    name: Run Linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install Dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Run Ruff Linter
+        run: poetry run ruff check --line-length 120 .
+
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    needs: lint  # Ensure linting passes before running tests
 
     env:
       WEATHER_API_BASE_URL: "https://mock_weatherapi.com/v1"
@@ -31,9 +54,6 @@ jobs:
 
       - name: Install Dependencies
         run: poetry install --no-interaction --no-root
-
-      - name: Verify Environment Variables
-        run: echo "WEATHER_API_BASE_URL=$WEATHER_API_BASE_URL"
 
       - name: Run Tests
         run: poetry run pytest --maxfail=1 --disable-warnings --cov=.
