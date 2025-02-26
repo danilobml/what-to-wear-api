@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from what_to_wear.api.models.schemas.mistral_llm_response import MistralLlmResponse
-from what_to_wear.api.utils.constants import ModelTypeEnum, NoModelSelectedException, MODEL_PARAMS
+from what_to_wear.api.utils.constants import MODEL_PARAMS, ModelTypeEnum, NoModelSelectedException
 
 
 class LLMResponseParser(ABC):
@@ -14,7 +14,9 @@ class LLMResponseParser(ABC):
 
 class MistralResponseParser(LLMResponseParser):
     """ Parser implementation for Mistral LLM """
-    def get_content(self, llm_response: MistralLlmResponse) -> str:
+
+    @staticmethod
+    def get_content(llm_response: MistralLlmResponse) -> str:
         return llm_response["choices"][0]["message"]["content"]
 
 
@@ -35,8 +37,7 @@ class LLMResponseParserFactory:
 def get_content_from_llm_response(llm_response, model_type: ModelTypeEnum) -> str:
     """ Gets the relevant (content) part of LLM responses: """
     parser = LLMResponseParserFactory.get_parser(model_type)
-    parser_instance = parser()
-    return parser_instance.get_content(llm_response)
+    return parser.get_content(llm_response)
 
 
 def get_model_params(model_type: ModelTypeEnum) -> str:

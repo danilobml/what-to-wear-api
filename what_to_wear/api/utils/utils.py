@@ -1,5 +1,5 @@
 from what_to_wear.api.models.schemas.current_weather import CurrentWeatherResponse
-from what_to_wear.api.models.schemas.forecast_weather import ForecastWeatherResponse, DayForecast
+from what_to_wear.api.models.schemas.forecast_weather import DayForecast, ForecastWeatherResponse
 
 
 def generate_clothes_recommendation_prompt_current_weather(weather_data: CurrentWeatherResponse) -> str:

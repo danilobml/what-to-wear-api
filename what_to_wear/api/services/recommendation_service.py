@@ -1,15 +1,22 @@
-import httpx
 from typing import Union
+
+import httpx
 from fastapi import HTTPException
 
 from what_to_wear.api.models.schemas.current_weather import CurrentWeatherResponse
 from what_to_wear.api.models.schemas.forecast_weather import ForecastWeatherResponse
+from what_to_wear.api.utils.constants import (
+    HEADERS,
+    LLM_API_URL,
+    MODEL_TYPE,
+    ModelTypeEnum,
+    RequestTypeEnum,
+)
+from what_to_wear.api.utils.llm_utils import get_content_from_llm_response, get_model_params
 from what_to_wear.api.utils.utils import (
     generate_clothes_recommendation_prompt_current_weather,
     generate_clothes_recommendation_prompt_forecast,
 )
-from what_to_wear.api.utils.llm_utils import get_content_from_llm_response, get_model_params
-from what_to_wear.api.utils.constants import LLM_API_URL, HEADERS, MODEL_TYPE, ModelTypeEnum, RequestTypeEnum
 
 
 async def get_llm_recommendation(

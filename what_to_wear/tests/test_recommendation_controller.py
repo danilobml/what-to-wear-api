@@ -1,14 +1,15 @@
-import pytest
 import json
-
-from unittest.mock import AsyncMock, patch
-from fastapi.testclient import TestClient
+from http import HTTPStatus
 from pathlib import Path
+from unittest.mock import AsyncMock, patch
+
+import pytest
+from fastapi.testclient import TestClient
 
 from what_to_wear.api.controllers.recommendation_controller import router
-from what_to_wear.api.services.auth_service import get_current_user
 from what_to_wear.api.models.schemas.current_weather import CurrentWeatherResponse
 from what_to_wear.api.models.schemas.forecast_weather import ForecastWeatherResponse
+from what_to_wear.api.services.auth_service import get_current_user
 from what_to_wear.main import app
 
 client = TestClient(app)
@@ -17,7 +18,7 @@ app.include_router(router, prefix="/recommendation")
 
 def load_mock_data(filename: str):
     json_path = Path(__file__).parent / "mock_data" / filename
-    with open(json_path, "r") as file:
+    with open(json_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
 
@@ -50,7 +51,7 @@ async def test_get_current_recommendation(override_auth):
             headers=headers
         )
 
-        assert response.status_code == 200
+        assert response.status_code == HTTPStatus.OK
         assert response.json() == MOCK_LLM_RECOMMENDATION
 
 
@@ -71,20 +72,20 @@ async def test_get_forecast_recommendation(override_auth):
             headers=headers
         )
 
-        assert response.status_code == 200
+        assert response.status_code == HTTPStatus.OK
         assert response.json() == MOCK_LLM_RECOMMENDATION
 
 
 @pytest.mark.asyncio
 async def test_get_current_recommendation_unauthorized():
     response = client.get("/recommendation/current", params={"lat": 12.34, "lon": 56.78})
-    assert response.status_code == 401
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
 
 
 @pytest.mark.asyncio
 async def test_get_forecast_recommendation_unauthorized():
     response = client.get("/recommendation/forecast", params={"lat": 12.34, "lon": 56.78, "days": 3})
-    assert response.status_code == 401
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
 
 
 @pytest.mark.asyncio
@@ -92,13 +93,13 @@ async def test_get_current_recommendation_missing_params():
     headers = {"Authorization": "Bearer fake_token"}
 
     response = client.get("/recommendation/current", params={}, headers=headers)
-    assert response.status_code == 422
+    assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
 
     response = client.get("/recommendation/current", params={"lat": 12.34}, headers=headers)
-    assert response.status_code == 422
+    assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
 
     response = client.get("/recommendation/current", params={"lon": 56.78}, headers=headers)
-    assert response.status_code == 422
+    assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.asyncio
@@ -107,7 +108,7 @@ async def test_get_current_recommendation_too_many_params():
 
     response = client.get("/recommendation/current", params={
         "lat": 12.34, "lon": 56.78, "city": "Test City"}, headers=headers)
-    assert response.status_code == 422
+    assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.asyncio
@@ -118,7 +119,7 @@ async def test_get_forecast_recommendation_invalid_days(override_auth):
         params={"lat": 12.34, "lon": 56.78, "days": "three"},
         headers=headers
     )
-    assert response.status_code == 422
+    assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.asyncio
@@ -127,7 +128,7 @@ async def test_get_forecast_recommendation_too_many_params():
 
     response = client.get("/recommendation/forecast", params={
         "lat": 12.34, "lon": 56.78, "city": "Test City", "days": 3}, headers=headers)
-    assert response.status_code == 422
+    assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.asyncio
@@ -144,4 +145,4 @@ async def test_get_current_recommendation_server_error(override_auth):
             headers=headers
         )
 
-        assert response.status_code == 500
+        assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR

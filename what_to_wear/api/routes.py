@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from .controllers import weather_controller, recommendation_controller, auth_controller
+from .controllers import auth_controller, recommendation_controller, weather_controller
 
 router = APIRouter()
 
