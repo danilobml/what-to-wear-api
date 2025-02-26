@@ -1,26 +1,27 @@
-import pytest
-import jwt
 from datetime import datetime, timedelta, timezone
+from http import HTTPStatus
 from unittest.mock import MagicMock
+
+import jwt
+import pytest
 from fastapi import HTTPException
 from sqlmodel import Session
 
+from what_to_wear.api.models.db_models.user import User
 from what_to_wear.api.services.auth_service import (
-    verify_password,
-    get_password_hash,
-    get_user_by_username,
     authenticate_user,
     create_access_token,
     get_current_user,
+    get_password_hash,
+    get_user_by_username,
+    verify_password,
 )
-from what_to_wear.api.models.db_models.user import User
-from what_to_wear.api.utils.constants import SECRET_KEY, ALGORITHM
+from what_to_wear.api.utils.constants import ALGORITHM, SECRET_KEY
 
 
 @pytest.fixture
 def mock_session():
-    session = MagicMock(spec=Session)
-    return session
+    return MagicMock(spec=Session)
 
 
 @pytest.fixture
@@ -91,7 +92,7 @@ async def test_get_current_user_invalid_token(mock_session):
     invalid_token = "invalid.jwt.token"
     with pytest.raises(HTTPException) as exc_info:
         await get_current_user(invalid_token, mock_session)
-    assert exc_info.value.status_code == 401
+    assert exc_info.value.status_code == HTTPStatus.UNAUTHORIZED
     assert "Could not validate credentials" in exc_info.value.detail
 
 
@@ -100,7 +101,7 @@ async def test_get_current_user_expired_token(mock_session):
     expired_token = create_access_token({"sub": "testuser"}, expires_delta=timedelta(seconds=-1))
     with pytest.raises(HTTPException) as exc_info:
         await get_current_user(expired_token, mock_session)
-    assert exc_info.value.status_code == 401
+    assert exc_info.value.status_code == HTTPStatus.UNAUTHORIZED
     assert "Could not validate credentials" in exc_info.value.detail
 
 
@@ -110,5 +111,5 @@ async def test_get_current_user_nonexistent_user(mock_session):
     mock_session.exec.return_value.first.return_value = None
     with pytest.raises(HTTPException) as exc_info:
         await get_current_user(token, mock_session)
-    assert exc_info.value.status_code == 401
+    assert exc_info.value.status_code == HTTPStatus.UNAUTHORIZED
     assert "Could not validate credentials" in exc_info.value.detail

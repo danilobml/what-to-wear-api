@@ -1,5 +1,6 @@
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from what_to_wear.api import routes
@@ -11,6 +12,7 @@ from what_to_wear.api.utils.constants import ORIGINS
 async def lifespan(app: FastAPI):
     init_db()
     yield
+
 
 app = FastAPI(
     lifespan=lifespan,

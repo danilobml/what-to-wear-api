@@ -1,12 +1,19 @@
 from http import HTTPStatus
-from fastapi import APIRouter, HTTPException, Depends
+
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
-from what_to_wear.api.services.weather_service import get_current_weather_data, get_forecast_weather_data
-from what_to_wear.api.services.recommendation_service import get_llm_recommendation
-from what_to_wear.api.utils.constants import RequestTypeEnum
-from what_to_wear.api.models.schemas.weather_request_params import WeatherRequestParams, ForecastWeatherRequestParams
+from what_to_wear.api.models.schemas.weather_request_params import (
+    ForecastWeatherRequestParams,
+    WeatherRequestParams,
+)
 from what_to_wear.api.services.auth_service import get_current_user
+from what_to_wear.api.services.recommendation_service import get_llm_recommendation
+from what_to_wear.api.services.weather_service import (
+    get_current_weather_data,
+    get_forecast_weather_data,
+)
+from what_to_wear.api.utils.constants import RequestTypeEnum
 
 router = APIRouter()
 

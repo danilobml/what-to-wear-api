@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from what_to_wear.api.models.schemas.current_weather import Location, CurrentWeather, Condition
+
+from what_to_wear.api.models.schemas.current_weather import Condition, CurrentWeather, Location
 
 
 class Astro(BaseModel):

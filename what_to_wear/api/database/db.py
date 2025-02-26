@@ -1,8 +1,7 @@
-from sqlmodel import create_engine, SQLModel, Session
+from sqlmodel import Session, SQLModel, create_engine
 
-from what_to_wear.api.utils.constants import DATABASE_URL
 from what_to_wear.api.models.db_models.user import User  # noqa
-
+from what_to_wear.api.utils.constants import DATABASE_URL
 
 engine = create_engine(DATABASE_URL, echo=True)
 

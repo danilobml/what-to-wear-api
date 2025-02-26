@@ -2,17 +2,16 @@ from datetime import datetime, timedelta, timezone
 from typing import Annotated, Union
 
 import jwt
-from sqlmodel import Session, select
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext
 from jwt.exceptions import InvalidTokenError
+from passlib.context import CryptContext
+from sqlmodel import Session, select
 
-from what_to_wear.api.utils.constants import SECRET_KEY, ALGORITHM
+from what_to_wear.api.database.db import get_session
 from what_to_wear.api.models.db_models.user import User
 from what_to_wear.api.models.schemas.jwt import TokenData
-from what_to_wear.api.database.db import get_session
-
+from what_to_wear.api.utils.constants import ALGORITHM, SECRET_KEY
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
