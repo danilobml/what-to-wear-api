@@ -1,20 +1,22 @@
 from datetime import timedelta
 from http import HTTPStatus
 
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 
-from what_to_wear.api.utils.constants import ACCESS_TOKEN_EXPIRE_MINUTES, UsernameAlreadyExistsException
+from what_to_wear.api.database.db import get_session
 from what_to_wear.api.models.schemas.jwt import Token
 from what_to_wear.api.models.schemas.user_auth import UserAuth
-from what_to_wear.api.database.db import get_session
 from what_to_wear.api.services.auth_service import (
     authenticate_user,
     create_access_token,
+    create_user,
     get_user_by_username,
-    create_user
 )
-
+from what_to_wear.api.utils.constants import (
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    UsernameAlreadyExistsException,
+)
 
 router = APIRouter()
 
