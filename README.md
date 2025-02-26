@@ -1,5 +1,5 @@
 # WhatToWear
-## A FastAPI-based, wardrobe recommendation API, accessing a Large Language Model, and real-time weather data + forecast.
+## A FastAPI-based, wardrobe recommendation API, accessing a Large Language Model, and real-time weather data.
 
 ## Tooling:
 
